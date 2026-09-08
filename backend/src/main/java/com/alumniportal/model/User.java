@@ -21,6 +21,7 @@ public class User {
 
     // BCrypt hash only — never store plaintext passwords
     @Column(name = "password_hash", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)

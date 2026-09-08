@@ -51,11 +51,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         // Local dev: localhost:5500 | Production: update S3/CloudFront URL
-        config.setAllowedOrigins(List.of(
-            "http://localhost:5500",
-            "http://127.0.0.1:5500",
-            "http://alumni-portal-frontend.s3-website-us-east-1.amazonaws.com"
-        ));
+        config.setAllowedOriginPatterns(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

@@ -34,16 +34,18 @@ public class ProfileController {
         User user = userRepository.findByEmail(auth.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Profile profile = profileRepository.findById(user.getId()).orElse(new Profile());
-        profile.setUser(user);
-        profile.setUserId(user.getId());
-        profile.setGraduationYear(profileData.getGraduationYear());
-        profile.setCompany(profileData.getCompany());
-        profile.setDesignation(profileData.getDesignation());
-        profile.setBio(profileData.getBio());
-        profile.setProfilePicUrl(profileData.getProfilePicUrl());
+        profileRepository.upsertProfile(
+                user.getId(),
+                profileData.getGraduationYear(),
+                profileData.getCompany(),
+                profileData.getDesignation(),
+                profileData.getBio(),
+                profileData.getProfilePicUrl()
+        );
 
-        return ResponseEntity.ok(profileRepository.save(profile));
+        return profileRepository.findById(user.getId())
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElse(ResponseEntity.ok(Map.of("message", "Profile updated")));
     }
 
     @GetMapping("/{userId}")

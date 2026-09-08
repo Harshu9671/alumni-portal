@@ -13,6 +13,7 @@ public class Profile {
     @OneToOne
     @MapsId
     @JoinColumn(name = "user_id")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private User user;
 
     @Column(name = "graduation_year")
