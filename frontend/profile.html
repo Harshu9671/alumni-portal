@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile — Alumni Portal</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav>
+  <div class="brand">Alumni Portal</div>
+  <div>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="#" id="logoutLink">Logout</a>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="card">
+    <h2>My Profile</h2>
+    <form id="profileForm">
+      <div>
+        <label>Graduation Year</label>
+        <input type="number" id="graduationYear" min="1950" max="2100">
+      </div>
+      <div>
+        <label>Company</label>
+        <input type="text" id="company">
+      </div>
+      <div>
+        <label>Designation</label>
+        <input type="text" id="designation">
+      </div>
+      <div>
+        <label>Bio</label>
+        <textarea id="bio" rows="4"></textarea>
+      </div>
+      <p class="muted" id="statusMsg"></p>
+      <button type="submit">Save Profile</button>
+    </form>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script>
+requireAuth();
+
+document.getElementById("logoutLink").addEventListener("click", (e) => {
+  e.preventDefault();
+  clearSession();
+  window.location.href = "login.html";
+});
+
+async function loadProfile() {
+  try {
+    const profile = await apiRequest("/profiles/me");
+    if (profile.graduationYear) document.getElementById("graduationYear").value = profile.graduationYear;
+    if (profile.company) document.getElementById("company").value = profile.company;
+    if (profile.designation) document.getElementById("designation").value = profile.designation;
+    if (profile.bio) document.getElementById("bio").value = profile.bio;
+  } catch (err) {
+    // No profile yet — fine, form stays empty
+  }
+}
+
+document.getElementById("profileForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const statusMsg = document.getElementById("statusMsg");
+  try {
+    await apiRequest("/profiles/me", "PUT", {
+      graduationYear: parseInt(document.getElementById("graduationYear").value) || null,
+      company: document.getElementById("company").value,
+      designation: document.getElementById("designation").value,
+      bio: document.getElementById("bio").value,
+    });
+    statusMsg.textContent = "Profile saved.";
+  } catch (err) {
+    statusMsg.textContent = "Error: " + err.message;
+  }
+});
+
+loadProfile();
+</script>
+
+</body>
+</html>

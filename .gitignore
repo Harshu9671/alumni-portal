@@ -1,0 +1,32 @@
+# Maven / Java
+target/
+*.class
+*.jar
+*.war
+*.ear
+.mvn/
+!.mvn/wrapper/maven-wrapper.jar
+hs_err_pid*
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Local env / secrets — NEVER commit these
+.env
+.env.local
+*.env
+
+# Logs
+*.log
+logs/

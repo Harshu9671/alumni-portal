@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Alumni Portal</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav>
+  <div class="brand">Alumni Portal</div>
+  <div>
+    <a href="profile.html">My Profile</a>
+    <a href="#" id="logoutLink">Logout</a>
+  </div>
+</nav>
+
+<div class="container">
+  <h1>Welcome, <span id="userName"></span></h1>
+
+  <div class="card">
+    <h2>Post an Opportunity</h2>
+    <form id="postForm">
+      <div>
+        <label>Title</label>
+        <input type="text" id="title" required>
+      </div>
+      <div>
+        <label>Description</label>
+        <textarea id="description" rows="3" required></textarea>
+      </div>
+      <button type="submit">Post</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>Recent Opportunities</h2>
+    <div id="opportunityList">Loading...</div>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script>
+requireAuth();
+document.getElementById("userName").textContent = localStorage.getItem("name") || "";
+
+document.getElementById("logoutLink").addEventListener("click", (e) => {
+  e.preventDefault();
+  clearSession();
+  window.location.href = "login.html";
+});
+
+async function loadOpportunities() {
+  const list = document.getElementById("opportunityList");
+  try {
+    const opportunities = await apiRequest("/opportunities");
+    if (!opportunities.length) {
+      list.innerHTML = '<p class="muted">No opportunities posted yet.</p>';
+      return;
+    }
+    list.innerHTML = opportunities.map(o => `
+      <div class="opportunity-item">
+        <strong>${o.title}</strong>
+        <p>${o.description}</p>
+        <span class="muted">Posted by ${o.postedBy?.name || "Unknown"}</span>
+      </div>
+    `).join("");
+  } catch (err) {
+    list.innerHTML = '<p class="error">Failed to load opportunities.</p>';
+  }
+}
+
+document.getElementById("postForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try {
+    await apiRequest("/opportunities", "POST", {
+      title: document.getElementById("title").value,
+      description: document.getElementById("description").value,
+    });
+    document.getElementById("postForm").reset();
+    loadOpportunities();
+  } catch (err) {
+    alert(err.message);
+  }
+});
+
+loadOpportunities();
+</script>
+
+</body>
+</html>
