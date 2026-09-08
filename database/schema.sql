@@ -1,8 +1,8 @@
 CREATE DATABASE IF NOT EXISTS alumni_portal;
 USE alumni_portal;
 
-CREATE TABLE users (
-  id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS users (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   email VARCHAR(100) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
@@ -10,8 +10,8 @@ CREATE TABLE users (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE profiles (
-  user_id INT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS profiles (
+  user_id BIGINT PRIMARY KEY,
   graduation_year INT,
   company VARCHAR(100),
   designation VARCHAR(100),
@@ -20,9 +20,9 @@ CREATE TABLE profiles (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE TABLE opportunities (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  posted_by INT,
+CREATE TABLE IF NOT EXISTS opportunities (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  posted_by BIGINT,
   title VARCHAR(150) NOT NULL,
   description TEXT,
   posted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
